@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>go-ethereum</title>
+    
+      <meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="generator" content="Hugo 0.49" />
+<title>195d72d :: go-ethereum</title>
+<link rel="shortcut icon" href="/go-ethereum-website/images/favicon.png" type="image/x-icon" />
+<link href="/go-ethereum-website/css/font-awesome.min.css" rel="stylesheet">
+<link href="/go-ethereum-website/css/nucleus.css" rel="stylesheet">
+<link href="/go-ethereum-website/theme-flex/style.css" rel="stylesheet">
+
+<link rel="stylesheet" href="/go-ethereum-website/css/bootstrap.min.css">
+<script src="/go-ethereum-website/js/jquery-2.x.min.js"></script>
+<script type="text/javascript">
+      var baseurl = "https:\/\/irons163.github.io\/go-ethereum-website\/";
+</script>
+<meta name="description" content="">
+
+
+
+    
+  </head>
+  <body data-url="/go-ethereum-website/commits-analysis/195d72d/">
+    
+      <header>
+  <div class="logo">
+    
+	
+  
+    <a class="baselink" href="https://irons163.github.io/go-ethereum-website/">go-ethereum</a>
+  
+
+  </div>
+  <div class="burger"><a href="javascript:void(0);" style="font-size:15px;">&#9776;</a></div>
+</header>
+<article>
+  <aside>
+    <ul class="menu">
+          <li data-nav-id="/go-ethereum-website/" class="dd-item">
+          <a href="/go-ethereum-website/">
+            <i class="fa fa-fw fa-home"></i>
+          </a>
+          </li>
+    <li data-nav-id="/go-ethereum-website/commits-analysis/" class="dd-item parent haschildren
+        ">
+      <div>
+      <a href="/go-ethereum-website/commits-analysis/">Commits Analysis</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/195d72d/" class="dd-item active">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/195d72d/">
+            195d72d
+          </a>
+        </div>
+    </li>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/eef6b5d/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/eef6b5d/">
+            eef6b5d
+          </a>
+        </div>
+    </li>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/32ae696/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/32ae696/">
+            32ae696
+          </a>
+        </div>
+    </li>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/92f28d/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/92f28d/">
+            92f28d
+          </a>
+        </div>
+    </li>
+        </ul>
+    </li>
+    <li data-nav-id="/go-ethereum-website/post/" class="dd-item haschildren
+        ">
+      <div>
+      <a href="/go-ethereum-website/post/">Posts</a><i class="fa fa-angle-right fa-lg category-icon"></i>
+      </div>
+        <ul>
+      <li data-nav-id="/go-ethereum-website/post/welcome/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/post/welcome/">
+            Welcome
+          </a>
+        </div>
+    </li>
+        </ul>
+    </li>
+
+
+
+
+    </ul>
+    <section>
+    </section>
+  </aside>
+  <section class="page">
+    
+    <div class="nav-select">
+      <center>Navigation : 
+        <select onchange="javascript:location.href = this.value;">
+          
+    <option value="/go-ethereum-website/commits-analysis/" >
+   Commits Analysis</option> 
+      <option value="/go-ethereum-website/commits-analysis/195d72d/"  selected>- 195d72d</option>
+      <option value="/go-ethereum-website/commits-analysis/eef6b5d/" >- eef6b5d</option>
+      <option value="/go-ethereum-website/commits-analysis/32ae696/" >- 32ae696</option>
+      <option value="/go-ethereum-website/commits-analysis/92f28d/" >- 92f28d</option>
+  
+    <option value="/go-ethereum-website/post/" >
+   Posts</option>
+
+
+
+        </select>
+      </center>
+    </div>
+      <div>
+        <div class="searchbox">
+          <input data-search-input id="search-by" type="text" placeholder="Search...">
+        </div>
+        <script type="text/javascript" src="/go-ethereum-website/js/lunr.min.js"></script>
+        <script type="text/javascript" src="/go-ethereum-website/js/auto-complete.js"></script>
+        <link href="/go-ethereum-website/css/auto-complete.css" rel="stylesheet">
+        <script type="text/javascript">
+          
+              var baseurl = "https:\/\/irons163.github.io\/go-ethereum-website\/";
+          
+        </script>
+        <script type="text/javascript" src="/go-ethereum-website/js/search.js"></script>
+      </div>
+    
+
+    <h1>195d72d</h1>
+    
+    
+    
+    
+
+<h5 id="commit-195d72d">commit: 195d72d</h5>
+
+<h5 id="comment-implemented-decoding-rlp">comment: Implemented decoding rlp</h5>
+
+<h5 id="file">file:</h5>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-g0" data-lang="g0">func Decode(data []byte, pos int) (interface{}, int) {
+    char := int(data[pos])
+    slice := make([]interface{}, 0) // slice 一開始為空
+    
+    switch {
+    case char &lt; 24:
+        return append(slice, data[pos]), pos + 1 //加入slice
+    case char &lt; 56:
+        b := int(data[pos]) - 23
+        return FromBin(data[pos+1 : pos+1+b]), pos + 1 + b // 透過FromBin將data[pos+1 : pos+1+b]從binary轉成int64。
+    case char &lt; 64:
+        b := int(data[pos]) - 55
+        b2 := int(FromBin(data[pos+1 : pos+1+b])) // 透過FromBin將data[pos+1 : pos+1+b]從binary轉成int64。
+        return FromBin(data[pos+1+b : pos+1+b+b2]), pos+1+b+b2 // 透過FromBin將data[pos+b : pos+1+b+b2]從binary轉成int64。
+    case char &lt; 120:
+        b := int(data[pos]) - 64
+        return data[pos+1:pos+1+b], pos+1+b
+    case char &lt; 128:
+        b := int(data[pos]) - 119
+        b2 := int(FromBin(data[pos+1 : pos+1+b]))
+        return data[pos+1+b : pos+1+b+b2], pos+1+b+b2
+    case char &lt; 184:
+        b := int(data[pos]) - 128
+        pos++
+        for i := 0; i &lt; b; i++ {
+            var obj interface{}
+
+            obj, pos = Decode(data, pos)
+            slice = append(slice, obj)
+        }
+        return slice, pos
+    case char &lt; 192:
+        b := int(data[pos]) - 183
+        //b2 := int(FromBin(data[pos+1 : pos+1+b])) (ref imprementation has an unused variable)
+        pos = pos+1+b
+        for i := 0; i &lt; b; i++ {
+            var obj interface{}
+
+            obj, pos = Decode(data, pos)
+            slice = append(slice, obj)
+        }
+        return slice, pos
+
+    default:
+        panic(fmt.Sprintf(&#34;byte not supported: %q&#34;, char))
+    }
+
+    return slice, 0
+}</code></pre></div>
+<p>分析：</p>
+
+<p>RLP 編碼定義如下：</p>
+
+<p>型別  |  首位元組範圍  |  編碼內容
+&mdash;&mdash;&mdash;&mdash; | &mdash;&mdash;&mdash;&mdash;-
+[0x00, 0x7f]的單個位元組  |  [0x00, 0x7f]  |  位元組內容本身
+0-55 位元組長的字串  |  [0x80, 0xb7]  |  0x80加上字串長度，後跟字串二進位制內容
+超過55個位元組的字串  |  [0xb8, 0xbf]  |  0xb7加上字串長度的長度，後跟字串二進位制內容
+0-55個位元組長的列表（所有項的組合長度） |  [0xc0, 0xf7]  |  0xc0加上所有的項的RLP編碼串聯起來的長度得到的單個位元組，後跟所有的項的RLP編碼的串聯組成。
+列表的內容超過55位元組  |  [0xf8, 0xff]  |  0xC0加上所有的項的RLP編碼串聯起來的長度的長度得到的單個位元組，後跟所有的項的RLP編碼串聯起來的長度的長度，再後跟所有的項的RLP編碼的串聯組成</p>
+
+<p>例子
+字串 &ldquo;pig&rdquo; = [ 0x83, &lsquo;p&rsquo;, &lsquo;i&rsquo;, &lsquo;g&rsquo; ]
+列表 [ &ldquo;pig&rdquo;, &ldquo;dog&rdquo; ] = [ 0xc8, 0x83, &lsquo;p&rsquo;, &lsquo;i&rsquo;, &lsquo;g&rsquo;, 0x83, &rsquo;d&rsquo;, &lsquo;o&rsquo;, &lsquo;g&rsquo; ]
+空字串 (&lsquo;null&rsquo;) = [ 0x80 ]
+空列表 = [ 0xc0 ]
+數字12 (&lsquo;x0c&rsquo;) = [ 0x0c ]
+數字 1024 (&lsquo;x04x00&rsquo;) = [ 0x82, 0x04, 0x00 ]
+巢狀列表 [ [], [[]], [ [], [[]] ] ] = [ 0xc7, 0xc0, 0xc1, 0xc0, 0xc3, 0xc0, 0xc1, 0xc0 ]
+字串 &ldquo;Lorem ipsum dolor sit amet, consectetur adipisicing elit&rdquo; = [ 0xb8, 0x38, &lsquo;L&rsquo;, &lsquo;o&rsquo;, &lsquo;r&rsquo;, &lsquo;e&rsquo;, &rsquo;m&rsquo;, &lsquo; &lsquo;, &hellip; , &lsquo;e&rsquo;, &lsquo;l&rsquo;, &lsquo;i&rsquo;, &rsquo;t&rsquo; ]</p>
+
+<p>RLP分析
+以上我們可以看出RLP編碼的設計思想，就是通過首位元組快速判斷一串編碼的型別，充分利用了一個位元組的儲存空間，將0x7f以後的值賦予了新的含義，RLP最大的優點是在充分利用位元組的情況下，同時支援列表結構，也就是說可以很輕易的利用RLP儲存一個樹狀結構。</p>
+
+<p>程序處理RLP編碼時也非常容易，根據首位元組就可以判斷出這段編碼的型別，同時呼叫不同的方法進行解碼，和JSON編碼類似，支援巢狀的結構，通過遞迴呼叫可以將整個RLP快速還原成一顆樹，或者轉譯成一個JSON結構，便於其他程序使用。</p>
+
+<p>Encode:</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go">WriteSliceHeader := <span style="color:#00a">func</span>(length <span style="color:#0aa">int</span>) {
+    <span style="color:#00a">if</span> length &lt; <span style="color:#099">56</span> {
+        <span style="color:#aaa;font-style:italic">// buff.WriteString(string(length + 128))
+</span><span style="color:#aaa;font-style:italic"></span>        buff.WriteByte(<span style="color:#0aa">byte</span>(length + <span style="color:#099">128</span>)) <span style="color:#aaa;font-style:italic">// Change from use WriteString to use WriteByte 
+</span><span style="color:#aaa;font-style:italic"></span>    } <span style="color:#00a">else</span> {
+        b2 := ToBin(<span style="color:#0aa">uint64</span>(length), <span style="color:#099">0</span>)
+        <span style="color:#aaa;font-style:italic">// buff.WriteString(string(len(b2) + 183) + b2)
+</span><span style="color:#aaa;font-style:italic"></span>        buff.WriteByte(<span style="color:#0aa">byte</span>(<span style="color:#0aa">len</span>(b2) + <span style="color:#099">183</span>)) <span style="color:#aaa;font-style:italic">// Change from use WriteString to use WriteByte 
+</span><span style="color:#aaa;font-style:italic"></span>        buff.WriteString(b2)
+    }
+}
+
+<span style="color:#aaa;font-style:italic">// FIXME How can I do this &#34;better&#34;?
+</span><span style="color:#aaa;font-style:italic"></span><span style="color:#00a">if</span> interSlice, ok := t.([]<span style="color:#00a">interface</span>{}); ok {
+    WriteSliceHeader(<span style="color:#0aa">len</span>(interSlice))
+    <span style="color:#00a">for</span> _, val := <span style="color:#00a">range</span> interSlice {
+        buff.Write(Encode(val))
+    }
+} <span style="color:#00a">else</span> <span style="color:#00a">if</span> stringSlice, ok := t.([]<span style="color:#0aa">string</span>); ok {
+    WriteSliceHeader(<span style="color:#0aa">len</span>(stringSlice))
+    <span style="color:#00a">for</span> _, val := <span style="color:#00a">range</span> stringSlice {
+        buff.Write(Encode(val))
+    }
+}</code></pre></div>
+<p>用來處理兩種類型切片<code>[]interface{}</code><code>[]string</code>，基本上是做一樣的事，程式碼需要優化。用迴圈處理切片內的元素，再次呼叫Encode函式處理，形成類似遞迴的概念。</p>
+
+<p>rlp_test.go</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#00a">func</span> TestEncode(t *testing.T) {
+strRes := <span style="color:#a50">&#34;Cdog&#34;</span>
+bytes := Encode(<span style="color:#a50">&#34;dog&#34;</span>)
+str := <span style="color:#0aa">string</span>(bytes)
+<span style="color:#00a">if</span> str != strRes {
+t.Error(fmt.Sprintf(<span style="color:#a50">&#34;Expected %q, got %q&#34;</span>, strRes, str))
+}
+dec,_ := Decode(bytes, <span style="color:#099">0</span>)
+fmt.Printf(<span style="color:#a50">&#34;raw: %v encoded: %q == %v\n&#34;</span>, dec, str, <span style="color:#a50">&#34;dog&#34;</span>)
+
+
+sliceRes := <span style="color:#a50">&#34;\x83CdogCgodCcat&#34;</span>
+strs := []<span style="color:#0aa">string</span>{<span style="color:#a50">&#34;dog&#34;</span>, <span style="color:#a50">&#34;god&#34;</span>, <span style="color:#a50">&#34;cat&#34;</span>}
+bytes = Encode(strs)
+slice := <span style="color:#0aa">string</span>(bytes)
+<span style="color:#00a">if</span> slice != sliceRes {
+t.Error(fmt.Sprintf(<span style="color:#a50">&#34;Expected %q, got %q&#34;</span>, sliceRes, slice))
+}
+
+dec,_ = Decode(bytes, <span style="color:#099">0</span>)
+fmt.Printf(<span style="color:#a50">&#34;raw: %v encoded: %q == %v\n&#34;</span>, dec, slice, strs)
+} </code></pre></div>
+<p>result:</p>
+
+<pre><code>init Ethereum VM
+stack size = 256
+
+# processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a)
+# fee = 0.000000, ops = 12, sender = 1234567890, value = 20
+
+# processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f)
+# fee = 0.000000, ops = 2, sender = 1234567890, value = 20
+0   67 [10 6 0 0 0 0]
+0   67 [10 6 0 0 0 0]
+# finished processing Tx
+
+2   66 [10 10 0 0 0 0]
+3   67 [255 7 0 0 0 0]
+4   81 [20 255 0 0 0 0]
+... JMP 7 ...
+7   66 [30 31 0 0 0 0]
+8   67 [255 22 0 0 0 0]
+9   81 [31 255 0 0 0 0]
+... JMP 22 ...
+# finished processing Tx
+
+rlp encoded Tx &quot;\x01\x00\x010\x00\n1234567890\x00\x010\x00\x0220\x00\x010\x01\x00\x06395843\x00\x06657986\x00\t335612448\x00\x06524099\x00\b16716881\x00\x010\x00\b13114947\x00\a2039362\x00\a1507139\x00\b16719697\x00\a1048387\x00\x0565360&quot;
+block enc &quot;\x01\x00\x010\x00\x00\x00\x00\x00 mi\u007f\xb0\b\x91A\xd0P\x1f\xb7\xf9\x1cd\xb1ӑ{\xc2ѕ&amp;X\xa4\u007f\xad\xea\x95\v\xed\xc8=&quot;
+block hash &quot;39e507d0bc23032af0fc1ad2d979c27d31968fc9ed69c4e3000fed172305e24d&quot;
+
+Process finished with exit code 0
+</code></pre>
+
+<p>test result:</p>
+
+<pre><code>=== RUN   TestEncode
+raw: [100 111 103] encoded: &quot;Cdog&quot; == dog
+raw: [[100 111 103] [103 111 100] [99 97 116]] encoded: &quot;\x83CdogCgodCcat&quot; == [dog god cat]
+--- PASS: TestEncode (0.00s)
+=== RUN   TestRlpEncode
+--- PASS: TestRlpEncode (0.00s)
+PASS
+
+Process finished with exit code 0
+</code></pre>
+
+
+    
+    
+        <div class="chevrons">
+    <div id="navigation">
+<a class="nav nav-prev" href="/go-ethereum-website/commits-analysis/" title="Commits Analysis"> <i class="fa fa-chevron-left"></i><label>Commits Analysis</label></a>
+    <a class="nav nav-next" href="/go-ethereum-website/commits-analysis/eef6b5d/" title="eef6b5d" style="margin-right: 0px;"><label>eef6b5d</label><i class="fa fa-chevron-right"></i></a></div>
+  </div>
+
+  </section>
+</article>
+
+<footer>
+
+<div class="footline">
+    
+
+    
+
+  
+    <div class="date">
+        <i class='fa fa-calendar'></i> Last update on 08/10/2018
+    </div>
+    
+
+    <div class="github-link">
+      <a href="Commits%20Analysis/195d72d.md" target="blank"><i class="fa fa-code-fork"></i>
+        Improve this page</a>
+    </div>
+  </div>
+
+
+	<div>
+
+
+  
+    Create a content/_footer.md file to customize the footer content
+  
+
+
+
+	</div>
+</footer>
+
+<script src="/go-ethereum-website/js/clipboard.min.js"></script>
+
+<link href="/go-ethereum-website/css/featherlight.min.css" rel="stylesheet">
+<script src="/go-ethereum-website/js/featherlight.min.js"></script>
+
+
+
+<script src="/go-ethereum-website/theme-flex/script.js"></script>
+
+    
+
+    
+    
+
+    
+  </body>
+</html>

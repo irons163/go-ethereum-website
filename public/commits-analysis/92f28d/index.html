@@ -47,10 +47,31 @@
     <li data-nav-id="/go-ethereum-website/commits-analysis/" class="dd-item parent haschildren
         ">
       <div>
-      <a href="/go-ethereum-website/commits-analysis/">Commits Analyses</a>
+      <a href="/go-ethereum-website/commits-analysis/">Commits Analysis</a>
             <i class="fa fa-angle-down fa-lg category-icon"></i>
       </div>
         <ul>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/195d72d/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/195d72d/">
+            195d72d
+          </a>
+        </div>
+    </li>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/eef6b5d/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/eef6b5d/">
+            eef6b5d
+          </a>
+        </div>
+    </li>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/32ae696/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/32ae696/">
+            32ae696
+          </a>
+        </div>
+    </li>
       <li data-nav-id="/go-ethereum-website/commits-analysis/92f28d/" class="dd-item active">
         <div>
           <a href="/go-ethereum-website/commits-analysis/92f28d/">
@@ -90,7 +111,10 @@
         <select onchange="javascript:location.href = this.value;">
           
     <option value="/go-ethereum-website/commits-analysis/" >
-   Commits Analyses</option> 
+   Commits Analysis</option> 
+      <option value="/go-ethereum-website/commits-analysis/195d72d/" >- 195d72d</option>
+      <option value="/go-ethereum-website/commits-analysis/eef6b5d/" >- eef6b5d</option>
+      <option value="/go-ethereum-website/commits-analysis/32ae696/" >- 32ae696</option>
       <option value="/go-ethereum-website/commits-analysis/92f28d/"  selected>- 92f28d</option>
   
     <option value="/go-ethereum-website/post/" >
@@ -128,16 +152,11 @@
 <h5 id="comment-init">comment: Init</h5>
 
 <p>這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。</p>
+<div class="highlight"><pre style="background-color:#fff;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-go" data-lang="go"><span style="color:#00a">func</span> FromBin(data []<span style="color:#0aa">byte</span>) <span style="color:#0aa">uint64</span> {
+<span style="color:#00a">if</span> <span style="color:#0aa">len</span>(data) == <span style="color:#099">0</span> { <span style="color:#00a">return</span> <span style="color:#099">0</span> }
 
-<pre><code class="language-go">
-func FromBin(data []byte) uint64 {
-if len(data) == 0 { return 0 }
-
-return FromBin(data[:len(data)-1]) * 256 + uint64(data[len(data)-1])
-}
-
-</code></pre>
-
+<span style="color:#00a">return</span> FromBin(data[:<span style="color:#0aa">len</span>(data)-<span style="color:#099">1</span>]) * <span style="color:#099">256</span> + <span style="color:#0aa">uint64</span>(data[<span style="color:#0aa">len</span>(data)-<span style="color:#099">1</span>])
+}</code></pre></div>
 <p>result:</p>
 
 <pre><code>init Ethereum VM
@@ -172,7 +191,7 @@ Process finished with exit code 0
     
         <div class="chevrons">
     <div id="navigation">
-<a class="nav nav-prev" href="/go-ethereum-website/commits-analysis/" title="Commits Analyses"> <i class="fa fa-chevron-left"></i><label>Commits Analyses</label></a>
+<a class="nav nav-prev" href="/go-ethereum-website/commits-analysis/32ae696/" title="32ae696"> <i class="fa fa-chevron-left"></i><label>32ae696</label></a>
     <a class="nav nav-next" href="/go-ethereum-website/post/" title="Posts" style="margin-right: 0px;"><label>Posts</label><i class="fa fa-chevron-right"></i></a></div>
   </div>
 

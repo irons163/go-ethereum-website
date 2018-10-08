@@ -6,294 +6,11 @@ draft: true
 
 
 
-commit:32ae696
-comment:1. Moved string util 2.Make Serializing block 3.Changed Tx serialization to return bytes instead of a string
-
-
-封裝（pack）與解封裝（unpack）這筆資料（另一個常用的稱呼為 ＂marshal＂與 ＂unmarshal＂）
-這邊架構還有些混亂，serialization.go負責的RlpEncode與block.go中的MarshalRlp及transaction.go中的MarshalRlp，這三者概念容易混淆。
-RlpEncode中負責將傳入的列表按造Rlp編碼定義來編碼，因為編碼不會破壞列表中元素的先後順序，所以可以說是序列化(serialization)。
-而MarshalRlp像是定義一個序列化的結構，在MarshalRlp中定義一個struct，列如 {A,B,C}，然後透過RlpEncode變成binary，binary可用於儲存或傳輸，然後再經由反向的RlpDecode與Unmarshal還原成struct {A,B,C}。
-
-這邊還沒有RlpDecode與Unmarshal，但是已經有預留伏筆，
-
-result:
-
-    init Ethereum VM
-    stack size = 256
-
-    # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a)
-    # fee = 0.000000, ops = 12, sender = 1234567890, value = 20
-
-    # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f)
-    # fee = 0.000000, ops = 2, sender = 1234567890, value = 20
-    0   67 [10 6 0 0 0 0]
-    1   67 [10 6 0 0 0 0]
-    # finished processing Tx
-
-    2   66 [10 10 0 0 0 0]
-    3   67 [255 7 0 0 0 0]
-    4   81 [20 255 0 0 0 0]
-    ... JMP 7 ...
-    7   66 [30 31 0 0 0 0]
-    8   67 [255 22 0 0 0 0]
-    9   81 [31 255 0 0 0 0]
-    ... JMP 22 ...
-    # finished processing Tx
-
-    rlp encoded Tx "\x01\x00\x010\x00\n1234567890\x00\x010\x00\x0220\x00\x010\x01\x00\x06395843\x00\x06657986\x00\t335612448\x00\x06524099\x00\b16716881\x00\x010\x00\b13114947\x00\a2039362\x00\a1507139\x00\b16719697\x00\a1048387\x00\x0565360"
-    block enc "\x01\x00\x010\x00\x00\x00\x00\x00 mi\u007f\xb0\b\x91A\xd0P\x1f\xb7\xf9\x1cd\xb1ӑ{\xc2ѕ&X\xa4\u007f\xad\xea\x95\v\xed\xc8="
-    block hash "39e507d0bc23032af0fc1ad2d979c27d31968fc9ed69c4e3000fed172305e24d"
-
-    Process finished with exit code 0
-
-commit:eef6b5d
-comment:Updated rlp encoding. (requires verification)
-file:
-rlp_test.go
-test result:
-
-    === RUN   TestEncode
-    --- PASS: TestEncode (0.00s)
-    PASS
-    coverage: 24.5% of statements
-
-    Process finished with exit code 0
-
-result:
-
-    init Ethereum VM
-    stack size = 256
-
-    # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a)
-    # fee = 0.000000, ops = 12, sender = 1234567890, value = 20
-
-    # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f)
-    # fee = 0.000000, ops = 2, sender = 1234567890, value = 20
-    0   67 [10 6 0 0 0 0]
-    1   66 [10 10 0 0 0 0]
-    1   67 [10 6 0 0 0 0]
-    # finished processing Tx
-
-    3   32 [10 1 20 0 0 0]
-    4   81 [20 255 0 0 0 0]
-    ... JMP 0 ...
-    0   67 [10 6 0 0 0 0]
-    1   66 [10 10 0 0 0 0]
-    2   32 [10 1 20 0 0 0]
-    3   67 [255 7 0 0 0 0]
-    4   81 [20 255 0 0 0 0]
-    ... JMP 7 ...
-    7   66 [30 31 0 0 0 0]
-    8   67 [255 22 0 0 0 0]
-    9   81 [31 255 0 0 0 0]
-    ... JMP 22 ...
-    # finished processing Tx
-
-commit:195d72d
-comment:Implemented decoding rlp
-file:
-
-    func Decode(data []byte, pos int) (interface{}, int) {
-    char := int(data[pos])
-    slice := make([]interface{}, 0)
-    switch {
-    case char < 24:
-    return append(slice, data[pos]), pos + 1
-    case char < 56:
-    b := int(data[pos]) - 23
-    return FromBin(data[pos+1 : pos+1+b]), pos + 1 + b
-    case char < 64:
-    b := int(data[pos]) - 55
-    b2 := int(FromBin(data[pos+1 : pos+1+b]))
-    return FromBin(data[pos+1+b : pos+1+b+b2]), pos+1+b+b2
-    case char < 120:
-    b := int(data[pos]) - 64
-    return data[pos+1:pos+1+b], pos+1+b
-    case char < 128:
-    b := int(data[pos]) - 119
-    b2 := int(FromBin(data[pos+1 : pos+1+b]))
-    return data[pos+1+b : pos+1+b+b2], pos+1+b+b2
-    case char < 184:
-    b := int(data[pos]) - 128
-    pos++
-    for i := 0; i < b; i++ {
-    var obj interface{}
-
-    obj, pos = Decode(data, pos)
-    slice = append(slice, obj)
-    }
-    return slice, pos
-    case char < 192:
-    b := int(data[pos]) - 183
-    //b2 := int(FromBin(data[pos+1 : pos+1+b])) (ref imprementation has an unused variable)
-    pos = pos+1+b
-    for i := 0; i < b; i++ {
-    var obj interface{}
-
-    obj, pos = Decode(data, pos)
-    slice = append(slice, obj)
-    }
-    return slice, pos
-
-    default:
-    panic(fmt.Sprintf("byte not supported: %q", char))
-    }
-
-    return slice, 0
-    }
-    
-    
-分析：
-
-RLP 編碼定義如下：
-
-型別  |  首位元組範圍  |  編碼內容
------------- | -------------
-[0x00, 0x7f]的單個位元組  |  [0x00, 0x7f]  |  位元組內容本身
-0-55 位元組長的字串  |  [0x80, 0xb7]  |  0x80加上字串長度，後跟字串二進位制內容
-超過55個位元組的字串  |  [0xb8, 0xbf]  |  0xb7加上字串長度的長度，後跟字串二進位制內容
-0-55個位元組長的列表（所有項的組合長度） |  [0xc0, 0xf7]  |  0xc0加上所有的項的RLP編碼串聯起來的長度得到的單個位元組，後跟所有的項的RLP編碼的串聯組成。
-列表的內容超過55位元組  |  [0xf8, 0xff]  |  0xC0加上所有的項的RLP編碼串聯起來的長度的長度得到的單個位元組，後跟所有的項的RLP編碼串聯起來的長度的長度，再後跟所有的項的RLP編碼的串聯組成
-
-
-例子
-字串 "pig" = [ 0x83, 'p', 'i', 'g' ]
-列表 [ "pig", "dog" ] = [ 0xc8, 0x83, 'p', 'i', 'g', 0x83, 'd', 'o', 'g' ]
-空字串 ('null') = [ 0x80 ]
-空列表 = [ 0xc0 ]
-數字12 ('x0c') = [ 0x0c ]
-數字 1024 ('x04x00') = [ 0x82, 0x04, 0x00 ]
-巢狀列表 [ [], [[]], [ [], [[]] ] ] = [ 0xc7, 0xc0, 0xc1, 0xc0, 0xc3, 0xc0, 0xc1, 0xc0 ]
-字串 "Lorem ipsum dolor sit amet, consectetur adipisicing elit" = [ 0xb8, 0x38, 'L', 'o', 'r', 'e', 'm', ' ', ... , 'e', 'l', 'i', 't' ]
-
-RLP分析
-以上我們可以看出RLP編碼的設計思想，就是通過首位元組快速判斷一串編碼的型別，充分利用了一個位元組的儲存空間，將0x7f以後的值賦予了新的含義，RLP最大的優點是在充分利用位元組的情況下，同時支援列表結構，也就是說可以很輕易的利用RLP儲存一個樹狀結構。
-
-程序處理RLP編碼時也非常容易，根據首位元組就可以判斷出這段編碼的型別，同時呼叫不同的方法進行解碼，和JSON編碼類似，支援巢狀的結構，通過遞迴呼叫可以將整個RLP快速還原成一顆樹，或者轉譯成一個JSON結構，便於其他程序使用。
 
 
 
-slice 一開始為空
-case char < 24:
-    return append(slice, data[pos]), pos + 1 //加入slice
-case char < 56:
-b := int(data[pos]) - 23 // -23
-return FromBin(data[pos+1 : pos+1+b]), pos + 1 + b // 透過FromBin將data[pos+1 : pos+1+b]從binary轉成int64。
-case char < 64:
-b := int(data[pos]) - 55 // -55
-b2 := int(FromBin(data[pos+1 : pos+1+b])) // 透過FromBin將data[pos+1 : pos+1+b]從binary轉成int64。
-return FromBin(data[pos+1+b : pos+1+b+b2]), pos+1+b+b2 // 透過FromBin將data[pos+1 : pos+1+b]從binary轉成int64。
-case char < 120: 
-b := int(data[pos]) - 64 // -64
-return data[pos+1:pos+1+b], pos+1+b
-case char < 128:
-b := int(data[pos]) - 119
-b2 := int(FromBin(data[pos+1 : pos+1+b]))
-return data[pos+1+b : pos+1+b+b2], pos+1+b+b2
-case char < 184:
-b := int(data[pos]) - 128
-pos++
-for i := 0; i < b; i++ {
-var obj interface{}
-
-obj, pos = Decode(data, pos)
-slice = append(slice, obj)
-}
-return slice, pos
-case char < 192:
-b := int(data[pos]) - 183
-//b2 := int(FromBin(data[pos+1 : pos+1+b])) (ref imprementation has an unused variable)
-pos = pos+1+b
-for i := 0; i < b; i++ {
-var obj interface{}
-
-obj, pos = Decode(data, pos)
-slice = append(slice, obj)
-}
-return slice, pos
-
-Encode:
-
-    WriteSliceHeader := func(length int) {
-    if length < 56 {
-    // buff.WriteString(string(length + 128))
-    buff.WriteByte(byte(length + 128)) // Change from use WriteString to use WriteByte 
-    } else {
-    b2 := ToBin(uint64(length), 0)
-    // buff.WriteString(string(len(b2) + 183) + b2)
-    buff.WriteByte(byte(len(b2) + 183)) // Change from use WriteString to use WriteByte 
-    buff.WriteString(b2)
-    }
-    
-
-rlp_test.go
-
-    func TestEncode(t *testing.T) {
-    strRes := "Cdog"
-    bytes := Encode("dog")
-    str := string(bytes)
-    if str != strRes {
-    t.Error(fmt.Sprintf("Expected %q, got %q", strRes, str))
-    }
-    dec,_ := Decode(bytes, 0)
-    fmt.Printf("raw: %v encoded: %q == %v\n", dec, str, "dog")
 
 
-    sliceRes := "\x83CdogCgodCcat"
-    strs := []string{"dog", "god", "cat"}
-    bytes = Encode(strs)
-    slice := string(bytes)
-    if slice != sliceRes {
-    t.Error(fmt.Sprintf("Expected %q, got %q", sliceRes, slice))
-    }
-
-    dec,_ = Decode(bytes, 0)
-    fmt.Printf("raw: %v encoded: %q == %v\n", dec, slice, strs)
-    } 
-    
-result:
-
-    init Ethereum VM
-    stack size = 256
-
-    # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a)
-    # fee = 0.000000, ops = 12, sender = 1234567890, value = 20
-
-    # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f)
-    # fee = 0.000000, ops = 2, sender = 1234567890, value = 20
-    0   67 [10 6 0 0 0 0]
-    0   67 [10 6 0 0 0 0]
-    # finished processing Tx
-
-    2   66 [10 10 0 0 0 0]
-    3   67 [255 7 0 0 0 0]
-    4   81 [20 255 0 0 0 0]
-    ... JMP 7 ...
-    7   66 [30 31 0 0 0 0]
-    8   67 [255 22 0 0 0 0]
-    9   81 [31 255 0 0 0 0]
-    ... JMP 22 ...
-    # finished processing Tx
-
-    rlp encoded Tx "\x01\x00\x010\x00\n1234567890\x00\x010\x00\x0220\x00\x010\x01\x00\x06395843\x00\x06657986\x00\t335612448\x00\x06524099\x00\b16716881\x00\x010\x00\b13114947\x00\a2039362\x00\a1507139\x00\b16719697\x00\a1048387\x00\x0565360"
-    block enc "\x01\x00\x010\x00\x00\x00\x00\x00 mi\u007f\xb0\b\x91A\xd0P\x1f\xb7\xf9\x1cd\xb1ӑ{\xc2ѕ&X\xa4\u007f\xad\xea\x95\v\xed\xc8="
-    block hash "39e507d0bc23032af0fc1ad2d979c27d31968fc9ed69c4e3000fed172305e24d"
-
-    Process finished with exit code 0
-    
-test result:
-
-    === RUN   TestEncode
-    raw: [100 111 103] encoded: "Cdog" == dog
-    raw: [[100 111 103] [103 111 100] [99 97 116]] encoded: "\x83CdogCgodCcat" == [dog god cat]
-    --- PASS: TestEncode (0.00s)
-    === RUN   TestRlpEncode
-    --- PASS: TestRlpEncode (0.00s)
-    PASS
-
-    Process finished with exit code 0
-    
 
 commit:8b993ac
 comment:Reset stack pointer on run
@@ -332,3 +49,159 @@ vm.go
 
 加入了func (tx *Transaction) UnmarshalRlp(data []byte)，做為transaction的反序列化方法。
 
+
+commit:38b37f2
+comment:Removed slice appending for integers
+file:
+rlp.go
+
+
+
+
+commit:db5092c
+comment:Add TestMultiEncode
+file:
+rlp_test.go
+
+=== RUN   TestEncode
+raw: [100 111 103] encoded: "Cdog" == dog
+raw: [[100 111 103] [103 111 100] [99 97 116]] encoded: "\x83CdogCgodCcat" == [dog god cat]
+--- PASS: TestEncode (0.00s)
+=== RUN   TestMultiEncode
+"\x83\x83A1A2A3\x84FstringGstring2d\x86A0J1234567890A\x00B20A0\x82F395843F657986y\x00p\x86A0J1234567890A\x00B20A0\x8cF395843F657986I335612448F524099H16716881A0H13114947G2039362G1507139H16719697G1048387E65360Dtest"
+[[[49] [50] [51]] [[115 116 114 105 110 103] [115 116 114 105 110 103 50] [134 65 48 74 49 50 51 52 53 54 55 56 57 48 65 0 66 50 48 65 48 130 70 51 57 53 56 52 51 70 54 53 55 57 56 54] [134 65 48 74 49 50 51 52 53 54 55 56 57 48 65 0 66 50 48 65 48 140 70 51 57 53 56 52 51 70 54 53 55 57 56 54 73 51 51 53 54 49 50 52 52 56 70 53 50 52 48 57 57 72 49 54 55 49 54 56 56 49 65 48 72 49 51 49 49 52 57 52 55 71 50 48 51 57 51 54 50 71 49 53 48 55 49 51 57 72 49 54 55 49 57 54 57 55 71 49 48 52 56 51 56 55 69 54 53 51 54 48]] [116 101 115 116]]
+--- PASS: TestMultiEncode (0.00s)
+PASS
+coverage: 61.0% of statements
+
+Process finished with exit code 0
+
+
+
+commit: 2bc701f
+comment: use Benchmark to test perfomance of EncodeDecode.
+file:
+rlp_test.go
+
+基本的 benchmark 測試也是透過 go test 指令，不同的是要加上 -bench=.，這樣才會跑 benchmark 部分，否則預設只有跑測試程式，大家可以看到 -4 代表目前的 CPU 核心數，也就是 GOMAXPROCS 的值，另外 -run 可以用在跑特定的測試函示，但是假設沒有指定 -run 時，你會看到預設跑測試 + benchmark，所以這邊補上 -run=none 的用意是不要跑任何測試，只有跑 benchmark，最後看看輸出結果，其中 1000000 代表一秒鐘可以跑 100 萬次，每一次需要 1253 ns，如果你想跑兩秒，請加上此參數在命令列 -benchtime=2s，但是個人覺得沒什麼意義。
+
+```go
+func BenchmarkEncodeDecode(b *testing.B) {
+    for i := 0; i < b.N; i++ {
+        bytes := Encode([]string{"dog", "god", "cat"})
+        Decode(bytes, 0)
+    }
+}
+```
+
+    goos: darwin
+    goarch: amd64
+    BenchmarkEncodeDecode-4        1000000          1253 ns/op
+    PASS
+
+    Process finished with exit code 0
+
+
+commit: ac8a06f
+comment: 1.(un)marshal blocks and transactions 2.Test code updated
+file:
+rlp_test.go
+
+```go
+func (block *Block) UnmarshalRlp(data []byte) {
+    t, _ := Decode(data,0)
+    if slice, ok := t.([]interface{}); ok {
+        if header, ok := slice[0].([]interface{}); ok {
+            if number, ok := header[0].(uint8); ok {
+                block.number = uint32(number)
+            }
+
+            if prevHash, ok := header[1].([]byte); ok {
+                block.prevHash = string(prevHash)
+            }
+
+            // sha of uncles is header[2]   
+
+            if coinbase, ok := header[3].([]byte); ok {
+                block.coinbase = string(coinbase)
+            }
+
+            // state is header[header[4]
+
+            // sha is header[5]
+
+            // It's either 8bit or 64
+            if difficulty, ok := header[6].(uint8); ok {
+                block.difficulty = uint32(difficulty)
+            }
+            if difficulty, ok := header[6].(uint64); ok {
+                block.difficulty = uint32(difficulty)
+            }
+
+            if time, ok := header[7].([]byte); ok {
+                fmt.Sprintf("Time is: ", string(time))
+            }
+
+            if nonce, ok := header[8].(uint8); ok {
+                block.nonce = uint32(nonce)
+            }
+        }
+
+        if txSlice, ok := slice[1].([]interface{}); ok {
+            block.transactions = make([]*Transaction, len(txSlice))
+
+            for i, tx := range txSlice {
+                if t, ok := tx.([]byte); ok {
+                    tx := &Transaction{}
+                    tx.UnmarshalRlp(t)
+
+                    block.transactions[i] = tx
+                }
+            }
+        }
+    }
+}
+```
+transaction.go:
+- return []byte(Encode(preEnc))
++ return Encode(preEnc)
+
+稍微優化一下，轉[]byte是不必要的，因為本Encode的回傳值就是[]byte。
+
+```go
+t := blck.MarshalRlp()
+copyBlock := &Block{}
+copyBlock.UnmarshalRlp(t)
+
+fmt.Println(blck)
+fmt.Println(copyBlock)
+```
+
+序列化與反序列化block，並打印出來。
+
+    &{1 1234 [] me 10 {13755934970731041952 1196413 0x11a71a0} 0 [0xc0000a4090 0xc0000a4000]}
+    &{1 1234 [] me 10 {0 0 <nil>} 0 [0xc0000a4120 0xc0000a41b0]}
+
+    Process finished with exit code 0
+
+這邊要注意，現在傳入func Encode(object interface{}) []byte 中的參數限定為uint32, uint64, string, []string ([]byte處理被隱藏起來了)，傳錯會當掉。
+```go
+/* I made up the block. It should probably contain different data or types. It sole purpose now is testing */
+// 測試模擬用
+header := []interface{}{
+    block.number,
+    block.prevHash,
+    //Sha of uncles
+    "",
+    block.coinbase,
+    //root state
+    "",
+    string(Sha256Bin([]byte(RlpEncode(encTx)))),
+    block.difficulty,
+    block.time.String(),
+    block.nonce,
+    // extra?
+}
+
+encoded := Encode([]interface{}{header, encTx})
+```

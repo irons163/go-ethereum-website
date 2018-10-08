@@ -6,7 +6,7 @@
       <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="generator" content="Hugo 0.49" />
-<title>Commits Analyses :: go-ethereum</title>
+<title>Commits Analysis :: go-ethereum</title>
 <link rel="shortcut icon" href="/go-ethereum-website/images/favicon.png" type="image/x-icon" />
 <link href="/go-ethereum-website/css/font-awesome.min.css" rel="stylesheet">
 <link href="/go-ethereum-website/css/nucleus.css" rel="stylesheet">
@@ -47,10 +47,31 @@
     <li data-nav-id="/go-ethereum-website/commits-analysis/" class="dd-item parent active haschildren
         ">
       <div>
-      <a href="/go-ethereum-website/commits-analysis/">Commits Analyses</a>
+      <a href="/go-ethereum-website/commits-analysis/">Commits Analysis</a>
             <i class="fa fa-angle-down fa-lg category-icon"></i>
       </div>
         <ul>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/195d72d/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/195d72d/">
+            195d72d
+          </a>
+        </div>
+    </li>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/eef6b5d/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/eef6b5d/">
+            eef6b5d
+          </a>
+        </div>
+    </li>
+      <li data-nav-id="/go-ethereum-website/commits-analysis/32ae696/" class="dd-item">
+        <div>
+          <a href="/go-ethereum-website/commits-analysis/32ae696/">
+            32ae696
+          </a>
+        </div>
+    </li>
       <li data-nav-id="/go-ethereum-website/commits-analysis/92f28d/" class="dd-item">
         <div>
           <a href="/go-ethereum-website/commits-analysis/92f28d/">
@@ -90,7 +111,10 @@
         <select onchange="javascript:location.href = this.value;">
           
     <option value="/go-ethereum-website/commits-analysis/"  selected>
-   Commits Analyses</option> 
+   Commits Analysis</option> 
+      <option value="/go-ethereum-website/commits-analysis/195d72d/" >- 195d72d</option>
+      <option value="/go-ethereum-website/commits-analysis/eef6b5d/" >- eef6b5d</option>
+      <option value="/go-ethereum-website/commits-analysis/32ae696/" >- 32ae696</option>
       <option value="/go-ethereum-website/commits-analysis/92f28d/" >- 92f28d</option>
   
     <option value="/go-ethereum-website/post/" >
@@ -117,51 +141,14 @@
       </div>
     
 
-    <h1>Commits Analyses</h1>
+    <h1>Commits Analysis</h1>
     
     
     
 
 
 
-<div class="extra-pagination inner">
-<nav class="pagination" role="navigation">
-	
-	<span class="page-number">Page 1 of 1</span>
-	
-</nav>
-
-</div>
-
-
-   <article class="post Commits Analysis">
-    <header class="post-header">
-        <h2 class="post-title"><a href="/go-ethereum-website/commits-analysis/92f28d/">92f28d</a></h2>
-    </header>
-    <section class="post-excerpt">
-        <p>commit: 92f28d comment: Init 這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。
-func FromBin(data []byte) uint64 { if len(data) == 0 { return 0 } return FromBin(data[:len(data)-1]) * 256 + uint64(data[len(data)-1]) }  result:
-init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 66 [10 10 0 0 0 0] 2 32 [10 1 20 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] . <a class="read-more" href="/go-ethereum-website/commits-analysis/92f28d/">&raquo;</a></p>
-    </section>
-    <footer class=" footline" >
-         
-        
-
-        
-        
-
-    </footer>
-</article>
-
-
-<div style="margin-bottom:2rem"></div>
-
-<nav class="pagination" role="navigation">
-	
-	<span class="page-number">Page 1 of 1</span>
-	
-</nav>
-
+<h5 id="新的commit在上面-舊的commit在下面-可以從最下面的commit分析開始看">新的Commit在上面，舊的Commit在下面，可以從最下面的Commit分析開始看。</h5>
 
 
 
@@ -170,7 +157,7 @@ init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e
         <div class="chevrons">
     <div id="navigation">
 <a class="nav nav-prev" href="/go-ethereum-website/" title="Welcome"> <i class="fa fa-chevron-left"></i><label>Welcome</label></a>
-    <a class="nav nav-next" href="/go-ethereum-website/commits-analysis/92f28d/" title="92f28d" style="margin-right: 0px;"><label>92f28d</label><i class="fa fa-chevron-right"></i></a></div>
+    <a class="nav nav-next" href="/go-ethereum-website/commits-analysis/195d72d/" title="195d72d" style="margin-right: 0px;"><label>195d72d</label><i class="fa fa-chevron-right"></i></a></div>
   </div>
 
   </section>
@@ -190,7 +177,7 @@ init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e
     
 
     <div class="github-link">
-      <a href="" target="blank"><i class="fa fa-code-fork"></i>
+      <a href="Commits%20Analysis/_index.md" target="blank"><i class="fa fa-code-fork"></i>
         Improve this page</a>
     </div>
   </div>

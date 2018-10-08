@@ -2,3 +2,5 @@ baseURL = "https://irons163.github.io/go-ethereum-website/"
 languageCode = "en-us"
 title = "go-ethereum"
 theme = "docdock"
+pygmentsStyle="autumn"
+pygmentsCodeFences=true

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="generator" content="Hugo 0.49" />
-<title>Categories :: go-ethereum</title>
+<title>Post 03 :: go-ethereum</title>
 <link rel="shortcut icon" href="/go-ethereum-website/images/favicon.png" type="image/x-icon" />
 <link href="/go-ethereum-website/css/font-awesome.min.css" rel="stylesheet">
 <link href="/go-ethereum-website/css/nucleus.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     
   </head>
-  <body data-url="/go-ethereum-website/categories/">
+  <body data-url="/go-ethereum-website/commits-analysis/post-03/">
     
       <header>
   <div class="logo">
@@ -44,36 +44,30 @@
             <i class="fa fa-fw fa-home"></i>
           </a>
           </li>
-    <li data-nav-id="/go-ethereum-website/commits-analysis/" class="dd-item haschildren
+    <li data-nav-id="/go-ethereum-website/commits-analysis/" class="dd-item parent haschildren
         ">
       <div>
-      <a href="/go-ethereum-website/commits-analysis/">Commits Analysis</a><i class="fa fa-angle-right fa-lg category-icon"></i>
+      <a href="/go-ethereum-website/commits-analysis/">Commits Analyses</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i>
       </div>
         <ul>
-      <li data-nav-id="/go-ethereum-website/commits-analysis/195d72d/" class="dd-item">
+      <li data-nav-id="/go-ethereum-website/commits-analysis/post-03/" class="dd-item active">
         <div>
-          <a href="/go-ethereum-website/commits-analysis/195d72d/">
-            195d72d
+          <a href="/go-ethereum-website/commits-analysis/post-03/">
+            Post 03
           </a>
         </div>
     </li>
-      <li data-nav-id="/go-ethereum-website/commits-analysis/eef6b5d/" class="dd-item">
+      <li data-nav-id="/go-ethereum-website/commits-analysis/post-02/" class="dd-item">
         <div>
-          <a href="/go-ethereum-website/commits-analysis/eef6b5d/">
-            eef6b5d
-          </a>
-        </div>
-    </li>
-      <li data-nav-id="/go-ethereum-website/commits-analysis/32ae696/" class="dd-item">
-        <div>
-          <a href="/go-ethereum-website/commits-analysis/32ae696/">
+          <a href="/go-ethereum-website/commits-analysis/post-02/">
             32ae696
           </a>
         </div>
     </li>
-      <li data-nav-id="/go-ethereum-website/commits-analysis/92f28d/" class="dd-item">
+      <li data-nav-id="/go-ethereum-website/commits-analysis/post-01/" class="dd-item">
         <div>
-          <a href="/go-ethereum-website/commits-analysis/92f28d/">
+          <a href="/go-ethereum-website/commits-analysis/post-01/">
             92f28d
           </a>
         </div>
@@ -110,7 +104,11 @@
         <select onchange="javascript:location.href = this.value;">
           
     <option value="/go-ethereum-website/commits-analysis/" >
-   Commits Analysis</option>
+   Commits Analyses</option> 
+      <option value="/go-ethereum-website/commits-analysis/post-03/"  selected>- Post 03</option>
+      <option value="/go-ethereum-website/commits-analysis/post-02/" >- 32ae696</option>
+      <option value="/go-ethereum-website/commits-analysis/post-01/" >- 92f28d</option>
+  
     <option value="/go-ethereum-website/post/" >
    Posts</option>
 
@@ -135,40 +133,65 @@
       </div>
     
 
-    <h1>Categories</h1>
+    <h1>Post 03</h1>
     
     
     
+    
 
+<h5 id="commit-eef6b5d">commit: eef6b5d</h5>
 
+<h5 id="comment-updated-rlp-encoding-requires-verification">comment: Updated rlp encoding. (requires verification)</h5>
 
-<div class="extra-pagination inner">
-<nav class="pagination" role="navigation">
-	
-	<span class="page-number">Page 1 of 0</span>
-	
-</nav>
+<p>file:
+rlp_test.go
+test result:</p>
 
-</div>
+<p>=== RUN   TestEncode
+&mdash; PASS: TestEncode (0.00s)
+PASS
+coverage: 24.5% of statements</p>
 
+<p>Process finished with exit code 0</p>
 
+<p>result:</p>
 
-<div style="margin-bottom:2rem"></div>
+<pre><code>init Ethereum VM
+stack size = 256
 
-<nav class="pagination" role="navigation">
-	
-	<span class="page-number">Page 1 of 0</span>
-	
-</nav>
+# processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a)
+# fee = 0.000000, ops = 12, sender = 1234567890, value = 20
 
+# processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f)
+# fee = 0.000000, ops = 2, sender = 1234567890, value = 20
+0   67 [10 6 0 0 0 0]
+1   66 [10 10 0 0 0 0]
+1   67 [10 6 0 0 0 0]
+# finished processing Tx
 
+3   32 [10 1 20 0 0 0]
+4   81 [20 255 0 0 0 0]
+... JMP 0 ...
+0   67 [10 6 0 0 0 0]
+1   66 [10 10 0 0 0 0]
+2   32 [10 1 20 0 0 0]
+3   67 [255 7 0 0 0 0]
+4   81 [20 255 0 0 0 0]
+... JMP 7 ...
+7   66 [30 31 0 0 0 0]
+8   67 [255 22 0 0 0 0]
+9   81 [31 255 0 0 0 0]
+... JMP 22 ...
+# finished processing Tx
+</code></pre>
 
 
     
     
         <div class="chevrons">
     <div id="navigation">
-<a class="nav nav-next" href="/go-ethereum-website/commits-analysis/" title="Commits Analysis" style="margin-right: 0px;"><label>Commits Analysis</label><i class="fa fa-chevron-right"></i></a></div>
+<a class="nav nav-prev" href="/go-ethereum-website/commits-analysis/" title="Commits Analyses"> <i class="fa fa-chevron-left"></i><label>Commits Analyses</label></a>
+    <a class="nav nav-next" href="/go-ethereum-website/commits-analysis/post-02/" title="32ae696" style="margin-right: 0px;"><label>32ae696</label><i class="fa fa-chevron-right"></i></a></div>
   </div>
 
   </section>
@@ -182,9 +205,13 @@
     
 
   
+    <div class="date">
+        <i class='fa fa-calendar'></i> Last update on 08/10/2018
+    </div>
+    
 
     <div class="github-link">
-      <a href="" target="blank"><i class="fa fa-code-fork"></i>
+      <a href="Commits%20Analysis/post-03.md" target="blank"><i class="fa fa-code-fork"></i>
         Improve this page</a>
     </div>
   </div>

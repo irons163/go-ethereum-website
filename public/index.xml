@@ -12,13 +12,45 @@
     
     
     <item>
+      <title>195d72d</title>
+      <link>https://irons163.github.io/go-ethereum-website/commits-analysis/195d72d/</link>
+      <pubDate>Mon, 08 Oct 2018 17:49:38 +0800</pubDate>
+      
+      <guid>https://irons163.github.io/go-ethereum-website/commits-analysis/195d72d/</guid>
+      <description>commit: 195d72d comment: Implemented decoding rlp file: func Decode(data []byte, pos int) (interface{}, int) { char := int(data[pos]) slice := make([]interface{}, 0) // slice 一開始為空 switch { case char &amp;lt; 24: return append(slice, data[pos]), pos + 1 //加入slice case char &amp;lt; 56: b := int(data[pos]) - 23 return FromBin(data[pos+1 : pos+1+b]), pos + 1 + b // 透過FromBin將data[pos+1 : pos+1+b]從binary轉成int64。 case char &amp;lt; 64: b := int(data[pos]) - 55 b2 := int(FromBin(data[pos+1 : pos+1+b])) // 透過FromBin將data[pos+1 : pos+1+b]從binary轉成int64。 return FromBin(data[pos+1+b : pos+1+b+b2]), pos+1+b+b2 // 透過FromBin將data[pos+b : pos+1+b+b2]從binary轉成int64。 case char &amp;lt; 120: b := int(data[pos]) - 64 return data[pos+1:pos+1+b], pos+1+b case char &amp;lt; 128: b := int(data[pos]) - 119 b2 := int(FromBin(data[pos+1 : pos+1+b])) return data[pos+1+b : pos+1+b+b2], pos+1+b+b2 case char &amp;lt; 184: b := int(data[pos]) - 128 pos++ for i := 0; i &amp;lt; b; i++ { var obj interface{} obj, pos = Decode(data, pos) slice = append(slice, obj) } return slice, pos case char &amp;lt; 192: b := int(data[pos]) - 183 //b2 := int(FromBin(data[pos+1 : pos+1+b])) (ref imprementation has an unused variable) pos = pos+1+b for i := 0; i &amp;lt; b; i++ { var obj interface{} obj, pos = Decode(data, pos) slice = append(slice, obj) } return slice, pos default: panic(fmt.</description>
+    </item>
+    
+    <item>
+      <title>eef6b5d</title>
+      <link>https://irons163.github.io/go-ethereum-website/commits-analysis/eef6b5d/</link>
+      <pubDate>Mon, 08 Oct 2018 14:33:44 +0800</pubDate>
+      
+      <guid>https://irons163.github.io/go-ethereum-website/commits-analysis/eef6b5d/</guid>
+      <description>commit: eef6b5d comment: Updated rlp encoding. (requires verification) file: rlp_test.go test result:
+=== RUN TestEncode --- PASS: TestEncode (0.00s) PASS coverage: 24.5% of statements Process finished with exit code 0  result:
+init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f) # fee = 0.000000, ops = 2, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 66 [10 10 0 0 0 0] 1 67 [10 6 0 0 0 0] # finished processing Tx 3 32 [10 1 20 0 0 0] 4 81 [20 255 0 0 0 0] .</description>
+    </item>
+    
+    <item>
+      <title>32ae696</title>
+      <link>https://irons163.github.io/go-ethereum-website/commits-analysis/32ae696/</link>
+      <pubDate>Mon, 08 Oct 2018 14:17:21 +0800</pubDate>
+      
+      <guid>https://irons163.github.io/go-ethereum-website/commits-analysis/32ae696/</guid>
+      <description>commit: 32ae696 comment: 1. Moved string util 2.Make Serializing block 3.Changed Tx serialization to return bytes instead of a string 封裝（pack）與解封裝（unpack）這筆資料（另一個常用的稱呼為 ＂marshal＂與 ＂unmarshal＂） 這邊架構還有些混亂，serialization.go負責的RlpEncode與block.go中的MarshalRlp及transaction.go中的MarshalRlp，這三者概念容易混淆。 RlpEncode中負責將傳入的列表按造Rlp編碼定義來編碼，因為編碼不會破壞列表中元素的先後順序，所以可以說是序列化(serialization)。 而MarshalRlp像是定義一個序列化的結構，在MarshalRlp中定義一個struct，列如 {A,B,C}，然後透過RlpEncode變成binary，binary可用於儲存或傳輸，然後再經由反向的RlpDecode與Unmarshal還原成struct {A,B,C}。
+這邊還沒有RlpDecode與Unmarshal，但是已經有預留伏筆，
+result:
+init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f) # fee = 0.000000, ops = 2, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 67 [10 6 0 0 0 0] # finished processing Tx 2 66 [10 10 0 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] .</description>
+    </item>
+    
+    <item>
       <title>92f28d</title>
       <link>https://irons163.github.io/go-ethereum-website/commits-analysis/92f28d/</link>
       <pubDate>Mon, 08 Oct 2018 12:29:08 +0800</pubDate>
       
       <guid>https://irons163.github.io/go-ethereum-website/commits-analysis/92f28d/</guid>
       <description>commit: 92f28d comment: Init 這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。
-func FromBin(data []byte) uint64 { if len(data) == 0 { return 0 } return FromBin(data[:len(data)-1]) * 256 + uint64(data[len(data)-1]) }  result:
+func FromBin(data []byte) uint64 { if len(data) == 0 { return 0 } return FromBin(data[:len(data)-1]) * 256 + uint64(data[len(data)-1]) } result:
 init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 66 [10 10 0 0 0 0] 2 32 [10 1 20 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] .</description>
     </item>
     
@@ -28,11 +60,9 @@ init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e
       <pubDate>Wed, 03 Oct 2018 11:09:53 +0800</pubDate>
       
       <guid>https://irons163.github.io/go-ethereum-website/post/welcome/</guid>
-      <description>commit:32ae696 comment:1. Moved string util 2.Make Serializing block 3.Changed Tx serialization to return bytes instead of a string
-封裝（pack）與解封裝（unpack）這筆資料（另一個常用的稱呼為 ＂marshal＂與 ＂unmarshal＂） 這邊架構還有些混亂，serialization.go負責的RlpEncode與block.go中的MarshalRlp及transaction.go中的MarshalRlp，這三者概念容易混淆。 RlpEncode中負責將傳入的列表按造Rlp編碼定義來編碼，因為編碼不會破壞列表中元素的先後順序，所以可以說是序列化(serialization)。 而MarshalRlp像是定義一個序列化的結構，在MarshalRlp中定義一個struct，列如 {A,B,C}，然後透過RlpEncode變成binary，binary可用於儲存或傳輸，然後再經由反向的RlpDecode與Unmarshal還原成struct {A,B,C}。
-這邊還沒有RlpDecode與Unmarshal，但是已經有預留伏筆，
-result:
-init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f) # fee = 0.000000, ops = 2, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 67 [10 6 0 0 0 0] # finished processing Tx 2 66 [10 10 0 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] .</description>
+      <description>commit:8b993ac comment:Reset stack pointer on run file: vm.go
+更新statck pointer運作機制，舊的寫法可能產生多線程問題。
+type Vm struct { // Memory stack stack map[string]string // Index ptr // iptr int // Remove memory map[string]map[string]string } func (vm *Vm) RunTransaction(tx *Transaction, cb TxCallback) { ... stPtr := 0 // Each transaction for run is with reset ptr beginning. // for vm.iptr &amp;lt; len(tx.data) { ... // 多次RunTransaction共用vm.iptr可能產生多線程問題 for stPtr &amp;lt; len(tx.data) { ...  commit:8b993ac comment:Reset stack pointer on run file: vm.</description>
     </item>
     
     <item>
