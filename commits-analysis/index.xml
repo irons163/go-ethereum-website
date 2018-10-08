@@ -17,10 +17,9 @@
       <pubDate>Mon, 08 Oct 2018 12:29:08 +0800</pubDate>
       
       <guid>https://irons163.github.io/go-ethereum-website/commits-analysis/92f28d/</guid>
-      <description>commit:92f28d comment:Init
-這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。
-result:
-init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 66 [10 10 0 0 0 0] 2 32 [10 1 20 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] ... JMP 7 .</description>
+      <description>commit: 92f28d comment: Init 這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。
+func FromBin(data []byte) uint64 { if len(data) == 0 { return 0 } return FromBin(data[:len(data)-1]) * 256 + uint64(data[len(data)-1]) }  result:
+init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 66 [10 10 0 0 0 0] 2 32 [10 1 20 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] .</description>
     </item>
     
   </channel>

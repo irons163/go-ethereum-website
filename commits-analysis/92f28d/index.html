@@ -121,10 +121,22 @@
     
     
     
-    <p>commit:92f28d
-comment:Init</p>
+    
+
+<h5 id="commit-92f28d">commit: 92f28d</h5>
+
+<h5 id="comment-init">comment: Init</h5>
 
 <p>這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。</p>
+
+<pre><code class="language-go">
+func FromBin(data []byte) uint64 {
+if len(data) == 0 { return 0 }
+
+return FromBin(data[:len(data)-1]) * 256 + uint64(data[len(data)-1])
+}
+
+</code></pre>
 
 <p>result:</p>
 
