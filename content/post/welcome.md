@@ -3,39 +3,7 @@ title: "Welcome"
 date: 2018-10-03T11:09:53+08:00
 draft: true
 ---
-commit:92f28d
-comment:Init
 
-這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。
-
-
-result:
-
-    init Ethereum VM
-    stack size = 256
-
-    # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a)
-    # fee = 0.000000, ops = 12, sender = 1234567890, value = 20
-    0   67 [10 6 0 0 0 0]
-    1   66 [10 10 0 0 0 0]
-    2   32 [10 1 20 0 0 0]
-    3   67 [255 7 0 0 0 0]
-    4   81 [20 255 0 0 0 0]
-    ... JMP 7 ...
-    7   66 [30 31 0 0 0 0]
-    8   67 [255 22 0 0 0 0]
-    9   81 [31 255 0 0 0 0]
-    ... JMP 22 ...
-    # finished processing Tx
-
-
-    # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f)
-    # fee = 0.000000, ops = 2, sender = 1234567890, value = 20
-    # finished processing Tx
-
-    rlp encoded Tx "\x01\x00\x010\x00\n1234567890\x00\x010\x00\x0220\x00\x010\x01\x00\x06395843\x00\x06657986\x00\t335612448\x00\x06524099\x00\b16716881\x00\x010\x00\b13114947\x00\a2039362\x00\a1507139\x00\b16719697\x00\a1048387\x00\x0565360"
-
-    Process finished with exit code 0
 
 
 commit:32ae696

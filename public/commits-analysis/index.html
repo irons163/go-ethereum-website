@@ -6,7 +6,7 @@
       <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="generator" content="Hugo 0.49" />
-<title>Posts :: go-ethereum</title>
+<title>Commits Analyses :: go-ethereum</title>
 <link rel="shortcut icon" href="/go-ethereum-website/images/favicon.png" type="image/x-icon" />
 <link href="/go-ethereum-website/css/font-awesome.min.css" rel="stylesheet">
 <link href="/go-ethereum-website/css/nucleus.css" rel="stylesheet">
@@ -23,7 +23,7 @@
 
     
   </head>
-  <body data-url="/go-ethereum-website/post/">
+  <body data-url="/go-ethereum-website/commits-analysis/">
     
       <header>
   <div class="logo">
@@ -44,10 +44,11 @@
             <i class="fa fa-fw fa-home"></i>
           </a>
           </li>
-    <li data-nav-id="/go-ethereum-website/commits-analysis/" class="dd-item haschildren
+    <li data-nav-id="/go-ethereum-website/commits-analysis/" class="dd-item parent active haschildren
         ">
       <div>
-      <a href="/go-ethereum-website/commits-analysis/">Commits Analyses</a><i class="fa fa-angle-right fa-lg category-icon"></i>
+      <a href="/go-ethereum-website/commits-analysis/">Commits Analyses</a>
+            <i class="fa fa-angle-down fa-lg category-icon"></i>
       </div>
         <ul>
       <li data-nav-id="/go-ethereum-website/commits-analysis/92f28d/" class="dd-item">
@@ -59,11 +60,10 @@
     </li>
         </ul>
     </li>
-    <li data-nav-id="/go-ethereum-website/post/" class="dd-item parent active haschildren
+    <li data-nav-id="/go-ethereum-website/post/" class="dd-item haschildren
         ">
       <div>
-      <a href="/go-ethereum-website/post/">Posts</a>
-            <i class="fa fa-angle-down fa-lg category-icon"></i>
+      <a href="/go-ethereum-website/post/">Posts</a><i class="fa fa-angle-right fa-lg category-icon"></i>
       </div>
         <ul>
       <li data-nav-id="/go-ethereum-website/post/welcome/" class="dd-item">
@@ -89,12 +89,12 @@
       <center>Navigation : 
         <select onchange="javascript:location.href = this.value;">
           
-    <option value="/go-ethereum-website/commits-analysis/" >
-   Commits Analyses</option>
-    <option value="/go-ethereum-website/post/"  selected>
-   Posts</option> 
-      <option value="/go-ethereum-website/post/welcome/" >- Welcome</option>
+    <option value="/go-ethereum-website/commits-analysis/"  selected>
+   Commits Analyses</option> 
+      <option value="/go-ethereum-website/commits-analysis/92f28d/" >- 92f28d</option>
   
+    <option value="/go-ethereum-website/post/" >
+   Posts</option>
 
 
 
@@ -117,7 +117,7 @@
       </div>
     
 
-    <h1>Posts</h1>
+    <h1>Commits Analyses</h1>
     
     
     
@@ -134,16 +134,15 @@
 </div>
 
 
-   <article class="post post">
+   <article class="post Commits Analysis">
     <header class="post-header">
-        <h2 class="post-title"><a href="/go-ethereum-website/post/welcome/">Welcome</a></h2>
+        <h2 class="post-title"><a href="/go-ethereum-website/commits-analysis/92f28d/">92f28d</a></h2>
     </header>
     <section class="post-excerpt">
-        <p>commit:32ae696 comment:1. Moved string util 2.Make Serializing block 3.Changed Tx serialization to return bytes instead of a string
-封裝（pack）與解封裝（unpack）這筆資料（另一個常用的稱呼為 ＂marshal＂與 ＂unmarshal＂） 這邊架構還有些混亂，serialization.go負責的RlpEncode與block.go中的MarshalRlp及transaction.go中的MarshalRlp，這三者概念容易混淆。 RlpEncode中負責將傳入的列表按造Rlp編碼定義來編碼，因為編碼不會破壞列表中元素的先後順序，所以可以說是序列化(serialization)。 而MarshalRlp像是定義一個序列化的結構，在MarshalRlp中定義一個struct，列如 {A,B,C}，然後透過RlpEncode變成binary，binary可用於儲存或傳輸，然後再經由反向的RlpDecode與Unmarshal還原成struct {A,B,C}。
-這邊還沒有RlpDecode與Unmarshal，但是已經有預留伏筆，
+        <p>commit:92f28d comment:Init
+這邊留下了些重構的伏筆，block跟transaction都是資料，也都需要進行Rlp編碼處理，但是serialization.go，這個名詞是序列化，但是不等於Rlp編碼，所以之後應該拉出rlp.go單獨來處理encode與decode，而序列化的動作則是透過繼承介面，讓block跟transaction都可以做序列化與反序列化。
 result:
-init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 # processing Tx (3ab78afb9e495acc6eabd8982730dbb679db2f) # fee = 0.000000, ops = 2, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 67 [10 6 0 0 0 0] # finished processing Tx 2 66 [10 10 0 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] . <a class="read-more" href="/go-ethereum-website/post/welcome/">&raquo;</a></p>
+init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e9e96ab39a) # fee = 0.000000, ops = 12, sender = 1234567890, value = 20 0 67 [10 6 0 0 0 0] 1 66 [10 10 0 0 0 0] 2 32 [10 1 20 0 0 0] 3 67 [255 7 0 0 0 0] 4 81 [20 255 0 0 0 0] ... JMP 7 . <a class="read-more" href="/go-ethereum-website/commits-analysis/92f28d/">&raquo;</a></p>
     </section>
     <footer class=" footline" >
          
@@ -171,8 +170,8 @@ init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e
     
         <div class="chevrons">
     <div id="navigation">
-<a class="nav nav-prev" href="/go-ethereum-website/commits-analysis/92f28d/" title="92f28d"> <i class="fa fa-chevron-left"></i><label>92f28d</label></a>
-    <a class="nav nav-next" href="/go-ethereum-website/post/welcome/" title="Welcome" style="margin-right: 0px;"><label>Welcome</label><i class="fa fa-chevron-right"></i></a></div>
+<a class="nav nav-prev" href="/go-ethereum-website/" title="Welcome"> <i class="fa fa-chevron-left"></i><label>Welcome</label></a>
+    <a class="nav nav-next" href="/go-ethereum-website/commits-analysis/92f28d/" title="92f28d" style="margin-right: 0px;"><label>92f28d</label><i class="fa fa-chevron-right"></i></a></div>
   </div>
 
   </section>
@@ -187,7 +186,7 @@ init Ethereum VM stack size = 256 # processing Tx (8fee28c5311d91212d92cbf14548e
 
   
     <div class="date">
-        <i class='fa fa-calendar'></i> Last update on 03/10/2018
+        <i class='fa fa-calendar'></i> Last update on 08/10/2018
     </div>
     
 
